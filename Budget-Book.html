@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Budget-Book</title>
+        <link rel="stylesheet" href="Budget-Book.css">
+    </head>
+
+    <body>
+        <header>
+            <h1>💰 가계부 앱</h1>
+            
+        </header>
+
+        <main>
+            <div class="app">
+                <button class="theme-toggle-btn">🌙</button>
+                <section class="input-area">입력: 
+                    <input class="amount-input" type="number" inputmode="numeric" maxlength="9" step="1" min="1" placeholder="금액 입력">
+
+                    <select class="type-select">
+                        <option value="expense">지출</option>
+                        <option value="income">수입</option>
+                    </select>                    
+
+                    <select class="category-select">
+                        <option value="food">식비</option>
+                        <option value="traffic">교통</option>
+                        <option value="shopping">쇼핑</option>
+                        <option value="salary">급여</option>
+                        <option value="etc">기타</option>
+                    </select>
+
+                    <input class="description-input" autocomplete="off" maxlength="100" placeholder="메모">
+
+                    <button class="add-btn">추가</button>
+                    <button class="cancel-edit-btn">수정 취소</button>
+                </section>
+
+                <div class="control">
+                    <section class="filter-area">필터: 
+                        <select class="type-filter">
+                            <option value="all">전체</option>
+                            <option value="expense">지출</option>
+                            <option value="income">수입</option>
+                        </select>
+
+                        <select class="category-filter">
+                            <option value="all">전체</option>
+                            <option value="food">식비</option>
+                            <option value="traffic">교통</option>
+                            <option value="shopping">쇼핑</option>
+                            <option value="salary">급여</option>
+                            <option value="etc">기타</option>
+                        </select>
+
+                        <select class="sort-select">
+                            <option value="latest">최신순</option>
+                            <option value="oldest">오래된순</option>
+                            <option value="amount-desc">금액 큰 순</option>
+                            <option value="amount-asc">금액 작은 순</option>
+                        </select>
+
+                        <select class="date-filter">
+                            <option value="all">전체 기간</option>
+                            <option value="today">오늘</option>
+                            <option value="week">이번 주</option>
+                            <option value="month">이번 달</option>
+                        </select>
+
+                        <input class="search-input" placeholder="메모 또는 금액 검색">
+                    </section>
+
+                    <section class="import-export">
+                        <button class="export-btn">CSV 내보내기</button>
+                        <button class="import-btn">CSV 불러오기</button>
+                        <input type="file" class="import-input" accept=".csv" hidden>
+                    </section>
+
+                    <button class="delete-all-btn">전체 삭제</button>
+                </div>
+
+                <div class="toast-container">
+                    <div class="toast"></div>
+                </div>
+
+                <div class="budget-list">
+                    <p class="empty-message">아직 등록된 거래가 없습니다.</p>
+                </div>
+
+                <section class="total-area">
+                    <p class="transaction-count"></p>
+                    <p class="income-total">수입 : 0원</p>
+                    <p class="expense-total">지출 : 0원</p>
+                    <p class="balance-total">잔액 : 0원</p>
+                </section>
+
+                <section class="stats-area">
+                    <h3>카테고리 통계</h3>
+                    <div class="stats-list"></div>
+                </section>
+            </div>
+        </main>
+
+        <script src="Budget-Book.js"></script>
+    </body>
+</html>
