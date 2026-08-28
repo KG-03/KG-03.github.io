@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Calendar-Planner</title>
+        <link rel="stylesheet" href="Calendar-Planner.css">
+    </head>
+
+    <body>
+        <header>
+            <h1>일정 관리</h1>
+            <section class="today">오늘 날짜</section>
+        </header>
+
+        <main>
+            <section class="top-tool-area">
+                <div class="helper">❔</div>
+                <div class="helper-tooltip">
+                    <p>ESC : 입력 취소</p>
+                    <p>PageUp : 다음달로 이동</p>
+                    <p>pageDown : 이전달로 이동</p>
+                    <p>→ : 다음날로 이동</p>
+                    <p>← : 이전날로 이동</p>
+                    <p>t : 오늘 날짜로 이동</p>
+                    <p>r : 새로고침</p>
+                    <p>a : 일정 전체 선택</p>
+                    <p>x : 일정 선택 취소</p>
+                    <p>Ctrl + Ender : 일정 입력 / 일정 완료</p>
+                    <p>d : 테마 변경</p>
+                </div>
+
+                <div class="theme-toggle-box">
+                    <button class="theme-toggle-btn">🌙</button>
+                </div>
+            </section>
+            
+            <section class="calendar-area">
+                <input id="jumpDate" type="date">
+                <button id="jumpDateBtn" type="button">이동</button>
+
+                <div class="calendar-header">
+                    <button class="prev-month-btn">◀</button>
+
+                    <h2 class="current-date-text">
+                        이번년 이번달
+                    </h2>
+
+                    <button class="next-month-btn">▶</button>
+                </div>
+
+                <button id="todayBtn" type="button">오늘 날짜로</button>
+
+                <div class="calendar">
+                    <div class="week-row"></div>
+                    <div class="calendar-grid"></div>
+                </div>
+
+                <div class="calendar-tooltip"></div>
+            </section>
+
+            <p class="selected-date">선택 날짜:</p>
+
+            <section class="input-area">
+                입력:
+                <input class="title-input" placeholder="일정 제목" maxlength="30">
+
+                <input class="time-input" type="time">
+
+                <select class="category-select">
+                    <option value="study">공부</option>
+                    <option value="work">업무</option>
+                    <option value="personal">개인</option>
+                    <option value="exercise">운동</option>
+                    <option value="etc">기타</option>
+                </select>
+
+                <select class="priority-select">
+                    <option value="high">높음</option>
+                    <option value="medium">보통</option>
+                    <option value="low">낮음</option>
+                </select>
+
+                <select class="repeat-select">
+                    <option value="none">반복 안 함</option>
+                    <option value="daily">매일</option>
+                    <option value="weekly">매주</option>
+                    <option value="monthly">매월</option>
+                    <option value="yearly">매년</option>
+                </select>
+
+                <textarea class="description-input" placeholder="메모" maxlength="500"></textarea>
+
+                <button class="add-btn">✓ 추가</button>
+                <button class="cancel-edit-btn">수정 취소</button>
+            </section>
+
+            <div class="reminder-area">
+                <label for="reminder-select">➕ 알림</label>
+                <select class="reminder-select">
+                    <option value="">알림 없음</option>
+                    <option value="5">5분 전</option>
+                    <option value="10">10분 전</option>
+                    <option value="30">30분 전</option>
+                </select>
+            </div>
+
+            <div class="repeat-end-area">
+                <label for="repeat-end-date">➕ 반복 종료일:</label>
+                <input class="repeat-end-date-input" type="date">
+            </div>
+
+            <section class="filter-area">필터:
+                <input class="search-input" placeholder="검색">
+                
+                <select class="category-filter">
+                    <option value="all">전체</option>
+                    <option value="study">공부</option>
+                    <option value="work">업무</option>
+                    <option value="personal">개인</option>
+                    <option value="exercise">운동</option>
+                    <option value="etc">기타</option>                    
+                </select>
+
+                <select class="priority-filter">
+                    <option value="all">전체</option>
+                    <option value="high">높음</option>
+                    <option value="medium">보통</option>
+                    <option value="low">낮음</option>                    
+                </select>
+
+                <select class="completed-filter">
+                    <option value="all">전체</option>
+                    <option value="completed">완료</option>
+                    <option value="uncompleted">미완료</option>
+                </select>
+
+                <select class="sort-filter">
+                    <option value="latest">최신순</option>
+                    <option value="oldest">오래된순</option>
+                    <option value="priority-desc">우선순위 높은순</option>
+                    <option value="priority-asc">우선순위 낮은순</option>
+                    <option value="time-desc">시간 빠른순</option>
+                    <option value="time-asc">시간 늦은순</option>
+                </select>
+
+                <label>
+                    <input type="checkbox" class="deleted-filter">
+                    🗑 휴지통
+                </label>
+            </section>
+
+            <button class="delete-all-btn">일괄 삭제</button>
+            <button class="delete-date-btn">오늘 날짜만 삭제</button>
+
+            <section class="bulk-area">
+                <button id="bulk-all-select-btn">전체 선택</button>
+                <button id="bulk-delete-btn">선택 일정 휴지통 이동</button>
+                <button id="bulk-complete-btn">선택 일정 완료</button>
+                <button id="bulk-cancel-btn">선택 해제</button>
+                <p class="bulk-selected-number"></p>
+            </section>
+
+            <div class="toast-container">
+                <div class="toast"></div>
+            </div>            
+
+            <section class="schedule-area">
+                <h3>일정 목록</h3>
+
+                <div class="completion-rate-area">
+                    <div class="completion-rate-header">
+                        <span>완료율</span>
+                        <span class="completion-rate-text">0%</span>
+                    </div>
+
+                    <div class="completion-bar">
+                        <div class="completion-progress"></div>
+                    </div>
+                </div>
+
+                <div class="schedule-list"></div>
+            </section>
+
+            <section class="stats-area">
+                <h3>통계</h3>
+                <div class="stats-list"></div>
+            </section>
+
+            <section class="storage-area">
+                <button class="export-btn">CSV 내보내기</button>
+                <button class="import-btn">CSV 불러오기</button>
+
+                <input class="import-input" type="file" accept=".csv" hidden>
+            </section>
+        </main>
+
+        <script src="Calendar-Planner.js"></script>
+    </body>
+</html>
