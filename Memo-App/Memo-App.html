@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang = "ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Memo-App</title>
+        <link rel = "stylesheet" href = "Memo-App.css">
+    </head>
+
+    <body>
+        <header>
+            <h1>메모 앱</h1>
+            <button class = "theme-toggle-btn"></button>
+            <button class = "help-btn">❔ 단축키</button>
+        </header>
+
+        <main>
+            <div class="app">
+                <h2>메모 리스트</h2>
+
+                <p class="save-status"></p>
+                <section class="input-area">
+                    <select class="category-select">
+                            <option value="general">일반</option>
+                            <option value="study">공부</option>
+                            <option value="work">작업</option>
+                            <option value="idea">아이디어</option>
+                    </select>
+                    <div class="main-input">
+                        <input class="input title-input" maxlength="50" placeholder="제목">
+                        <div class="input-count title-count">0 / 50</div>
+                        <textarea class="input content-input" maxlength="500" placeholder="내용"></textarea>
+                        <div class="input-count content-count">0 / 500</div>
+                        <button class="add-btn">추가</button>
+                        <button class="cancel-edit-btn">수정 취소</button>
+                        <div class="app-message"></div><br>
+                    </div>
+
+                    <input type="file" class="import-input" accept=".json"/>
+                </section>
+
+                <select class="sort-select-filter">
+                    <option value="latest">최신순</option>
+                    <option value="oldest">오래된순</option>
+                    <option value="title">제목순</option>
+                    <option value="updated">최근 수정순</option>
+                </select>
+                <select class="category-filter">
+                    <option value="all">전체</option>
+                    <option value="general">일반</option>
+                    <option value="study">공부</option>
+                    <option value="work">작업</option>
+                    <option value="idea">아이디어</option>
+                </select>
+                <input class="input search-input" placeholder="메모 검색">
+
+                <section class="pin-area">
+                    <button data-pin="all">전체</button>
+                    <button data-pin="pinned">고정</button>
+                    <button data-pin="normal">일반</button>
+                </section>
+                <button class="archive-view-btn">📦 보관함</button>
+
+                <button class="export-btn">내보내기</button>
+
+                <div class="note-status"></div>
+
+                <div class="note-list"></div>
+            </div>
+        </main>
+
+        <script src="Memo-App.js"></script>
+    </body>
+    <!--
+        data-filter : 사용자 정의 데이터를 붙인다. 데이터 저장 목적으로 이용된다.
+                    JS에서 button.dataset.filter로 읽어낼 수 있다.
+                    data-이름="값"의 형태로 저장된다.
+                    만약 data-user-id="15"라는 정의가 있다면, element-dataset-userId를 통해 불러낼 수도 있다.
+                            kebab-case > camelCase 변환이 가능하다는 의미.
+                    class == 스타일 목적, data-* == 데이터 저장 목적
+        select - option : 드롭다운 선택 메뉴를 만드는 것.
+                          select : 선텍 메뉴를 만드는 태그.
+                          option : 선택 가능한 항목 하나.
+                          <select> <option value="...1">...2</option> <select> 구조로 사용한다.
+                          ...1에 실제 데이터 상의 이름을 지정하고, ...2에 가시적으로 보여줄 이름을 지정한다.
+        maxlength="50"  : input에서 '얼마만큼' 글자를 받을 것인지 제한을 거는 것.
+    -->
+</html>
