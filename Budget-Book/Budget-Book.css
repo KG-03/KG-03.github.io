@@ -1,0 +1,219 @@
+body {
+    margin: 0;
+    padding: 20px;
+
+    transition: 0.3s;
+}
+
+h1 {
+    text-align: center;
+}
+
+input,
+select {
+    padding: 8px;
+}
+
+button {
+    cursor: pointer;
+
+    padding: 8px 12px;
+    margin-right: 5px;
+
+    background-color: #f3f2d9;
+    border: 1px solid #f3f2d9;
+    border-radius: 10px;
+}
+
+button:hover {
+    opacity: 0.6;
+}
+
+.app {
+    max-width: 800px;
+
+    margin: 0 auto;
+    padding: 20px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ===== input area =====*/
+.input-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+.amount-input {
+    width: 150px;
+}
+
+.cancel-edit-btn {
+    display: none;
+}
+
+/* ===== control ===== */
+.control {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+/* ===== filter area ===== */
+.filter-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* ===== import/export ===== */
+.import-export {
+    display:flex;
+    gap: 10px;
+}
+
+/* ===== toast =====*/
+.toast-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+.toast {
+    pointer-events: none;
+    opacity: 0;
+
+    transition: 
+        opacity .3s,
+        background-color .3s,
+        color .3s;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+/* ===== budget list ===== */
+.budget-list {
+    min-height: 200px;
+
+    padding: 10px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+}
+
+.budget-card {
+    padding: 10px;
+
+    margin-bottom: 10px;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.empty-message {
+    text-align: center;
+    opacity: 0.7;
+}
+
+.card-date-text {
+    white-space: pre-wrap;
+    font-size: 12px;
+    color:#999999;
+}
+
+.card-description-text {
+    font-size: 15px;
+
+    padding: 5px;
+}
+
+/* ===== total-area ===== */
+.total-area {
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.income {
+    color: green;
+}
+
+.expense {
+    color: red;
+}
+
+/* ===== dark/light theme ===== */
+.theme-toggle-btn {
+    float: right;
+}
+
+body.light-theme {
+    background: #f5f5f5;
+    color: black;
+}
+
+body.dark-theme {
+    background: #1e1e1e;
+    color: white;
+}
+
+body.light-theme .app {
+    background: white;
+}
+
+body.dark-theme .app {
+    background: black;
+}
+
+body.light-theme .card-description-text {
+    background: #f3f1da;
+}
+
+body.dark-theme .card-description-text {
+    background: #696740;
+}
+
+body.light-theme .total-area {
+    background: #f0f0f0;
+}
+
+body.dark-theme .total-area {
+    background: #131313;
+}
+
+@media (max-width: 768px) {
+    .control {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-area {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-area {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
