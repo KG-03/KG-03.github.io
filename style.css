@@ -1,0 +1,34 @@
+header {
+    justify-content: center;
+    text-align: center;
+
+    padding:10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+
+    background-color: #d4d4d4;
+}
+
+.project-area {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.project-card {
+    display: block;
+    height: 150px;
+    width: 300px;
+
+    padding: 10px;
+    margin: 10px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    border-radius: 10px;
+
+    background-color: #f0f0f0;    
+}
+
+.explanation {
+    font-size: 14px;
+}
