@@ -605,6 +605,8 @@ function updateSchedule() {
                       (editRepeatDate !== "" && editSchedule.date !== selectedDateData.getTime()) ||
                       editSchedule.time !== timeInput.value;
 
+    const isConvertingToNormal = editSchedule.repeat !== "none" && repeatSelect.value === "none";
+
     if(!isChanged) {
         refreshSchedules();
         resetScheduleForm();
@@ -630,6 +632,8 @@ function updateSchedule() {
             description: descriptionInput.value.trim(),
             time: timeInput.value,
             reminder: reminderData,
+            repeat: "none",
+            repeatEndDate: null,
             updatedAt: Date.now()
         }
     } else {
@@ -640,10 +644,17 @@ function updateSchedule() {
         editSchedule.repeatEndDate = repeatEndDateData;
         editSchedule.description = descriptionInput.value.trim();
         editSchedule.time = timeInput.value;
-        editSchedule.reminder = reminderData,
+        editSchedule.reminder = reminderData;
         editSchedule.updatedAt = Date.now();
 
-        if(editRepeatDate !== "") {
+        if(isConvertingToNormal) {
+            editSchedule.completedDates = [];
+            editSchedule.deletedDates = [];
+            editSchedule.exceptions = {};
+            editSchedule.repeatEndDate = null;
+
+            if(editRepeatDate !== "") editSchedule.date = selectedDateData.getTime();
+        } else if(editRepeatDate !== "") {
             shiftRepeatSchedule(editSchedule, editRepeatDate, selectedDateData);
         }
     }
@@ -2177,3 +2188,162 @@ updateThemeButton();
 
 checkScheduleNotifications();
 setInterval(checkScheduleNotifications, 10000);
+
+
+/* 5일차
+ * getTime()    : 해당 날짜와 시간을 n년 n월 n일 00:00:00 UTC부터 지난 시간을 밀리초로 반환하는 함수.
+ *                Date 객체를 저장해도 JSON으로 저장하면 문자열이 된다.
+ *                따라서 해당 방식으로 저장하여 차후 new Date(schedule.date)처럼 쓸 수 있도록 한다. (새 Date 객체를 만들기 위해)
+ */
+
+/* 7일차
+ * forEach()    : 반환값이 없다는 것을 기억할 것.
+ *                따라서 a = a.forEach(...)를 사용하면 a에 무슨 값이 있었든 undefine이 된다.
+ */
+
+/* 12일차
+ * \uFEFF       : \u는 유니코드 문자라는 의미. FEFF는 16진수 4자리 코드로, BOM(Byte Order Mark), UTF-8 파일 앞에 붙이는 경우가 많다.
+ *                  BOM     : 이 파일이 어떤 문자 인코딩으로 저장되어 있는지를 알려주는 표시.
+ *                            CSV에서 엑셀이 한글을 올바르게 읽도록 할 때 자주 사용한다.
+ * 
+ * join()       : 배열의 메서드. 배열의 모든 요소를 하나의 문자열로 합치는 함수.
+ *                '배열.join("구분자")'와 같은 형태.
+ *                const arr = ["A", "B", "C"]; 일 때, arr.join(",")으로 하면 "A,B,C"가 된다.
+ *                중첩되어 사용하는 지금의 경우, "이름,나이",\n"김철수,20",\n"이영희,25"와 같은 형식이 된다.
+ * 
+ * `"${String(value).replace(/"/g, '""')}"`     : replace()는 문자열의 일부를 다른 문자열로 바꾸는 함수.
+ *                                                '/"/g'의 경우, '/찾을내용/옵션'의 형식. g는 globel으로, 
+ *                                                  해당 수식은 문자열 안의 "를 찾는데, 모든 따옴표를 대상으로 한다는 의미.
+ *                                                '""'는 큰따옴표 두 개짜리 문자열을 의미.
+ *                                                replace(/"/g, '""')는 모든 문자열의 "를 대상으로 "를 ""으로 바꾼단 의미다.
+ *                                                저장될 때 "a" 형식으로 저장되는데, "안녕하세요 "저"입니다"와 같이 저장되면 문자열이 끝난 것으로 오해할 수 있기 때문.
+ *                                                  따라서 "안녕하세요 ""저""입니다"로 저장하는 것.
+ */
+
+/* 13일차
+ * .replace(/\r\n/g, "\\n")     : Windows 줄바꿈. /\r\n/g는 'Windows의 줄바꿈을 모두 찾는다'라는 의미. 찾아서 문자 "\n"으로 변환.
+ * .replace(/\n/g, "\\n")       : Unix 줄바꿈. /\n/g는 'Unix, Liunx, MacOS의 줄바꿈을 모두 찾는다'라는 의미. 찾아서 문자 "\n"으로 변환.
+ * 
+ * .replace(/""/g, '"')         : 큰 따옴표 두 개를 큰 따옴표 하나로 바꾼다는 의미.
+ *                                저장할 때 "이것"을 ""이것""으로 저장했다가, 다시 불러올 때 "이것"으로 불러내기 위해서 사용.
+ * .replace(/\\n/g, "\n");      : 문자 두 개 \와 n을 실제 줄바꿈 문자로 바꾼다는 의미. \\n와 \n은 다르기 때문.
+ *                                \n은 줄바꿈이 이루어지지만, \\n은 줄바꿈이 이루어지지 않는다.
+ * 
+ * if (value.startsWith('"') && value.endsWith('"')) {
+ *      value = value.slice(1, -1);
+ *  }
+ *      : startsWith()  : 문자열이 특정 문자열로 시작하는지 확인.
+ *        endsWith()    : 문자열이 특정 문자열로 끝나는지 확인.
+ *        slice(1, -1)  : 문자열의 앞과 뒤의 문자를 잘라낸다. slice(인덱스의 1부터 시작해서, 마지막 글자는 제외)한다는 의미.
+ */
+
+/* 14일차
+ * for (const line of lines)    : lines 배열의 첫 번째 줄을 가져와서 검사 후, 검사가 끝나면 두 번째 줄을 가져와서 검사.
+ *                                lines 배열의 요소를 하나씩 꺼내어 line에 넣고, 처음부터 끝까지 반복하는 문법.
+ *                                for...of는 배열을 처음부터 끝까지 순회하면서 각 요소를 하나씩 꺼내서 처리하는 반복문.
+ */
+
+/* 18일차
+ * a.time.localeCompare(b.time) : 문자열을 사전 순서로 비교하는 함수.
+ *                                언어(Locale)의 정렬 규칙을 고려하여 두 문자열의 순서를 비교.
+ */
+
+/* 19일차
+ * const now = new Date();
+ *
+ * const [hour, minute] = schedule.time.split(":");
+ *
+ * const scheduleDate = new Date(schedule.date);
+ * scheduleDate.setHours(hour);
+ * scheduleDate.setMinutes(minute);
+ *          이 코드에서 const [hour, minute] = schedule.time.split(":");가 필요한 이유는
+ *          shedule.date에 time이 설정되지 않았기(ex: 2026-07-27 00:00으로 저장되어 있는 등) 때문.
+ */
+
+/* 20일차
+ * getBoundingClientRect()  : HTML의 요소의 위치, 크기를 알려주는 함수.
+ *                            해당 요소가 현재 화면(Viewport)에서 어디에 있고, 얼마나 큰지 알려준다.
+ *                            HTML 요소의 현재 화면 기준 위치와 크기를 나타내는 객체를 반환하는 함수.
+ *                            스크롤 애니메이션, 드래그 앤 드롭, 툴팁 및 Toast 위치 계산 등에서 자주 사용.
+ *                            const rect = box.getBoundingClientRect(); 일 때,
+ *                              rect.top    : 화면 위에서 요소까지의 거리
+ *                              rect.left   : 화면 왼쪽에서 요소까지의 거리
+ *                              rect.width  : 요소의 너비
+ *                              rect.height : 요소의 높이
+ *                              rect.right  : 요소의 오른쪽 좌표
+ *                              rect.bottom : 요소의 아래쪽 좌표
+ */
+
+/* 21일차
+ * void toast.offsetWidth;  : offsetWidth는 요소의 현재 너비를 반환하는 속성.
+ *                            offsetWidth를 알려면 현재 레이아웃이 정확해야 하기 때문에 Reflow를 강제로 수행.
+ *                            요소의 크기 계산, 위치 계산, 스타일 적용 등을 끝낸 뒤, 값을 반환.
+ * 
+ *                            void는 표현식을 실행하지만 결과값을 버린다는 의미.
+ *                            따라서 void toast.offsetWidth는 toast.offsetWidth를 읽고, 브라우저가 레이아웃을 계산한 뒤, 반환된 너비는 버린다는 의미가 된다.
+ *                            toast.classList.remove("show") > void toast.offsetWidth > toast.classList.add("show"); 순서대로 하면
+ *                              'show 제거 > 레이아웃 다시 계산 > show 다시 추가'를 각각 다른 단계로 인식.
+ *                              show 클래스 제거를 브라우저가 확실하게 반영한 뒤, 다시 show 클래스를 추가하여 애니메이션을 처음부터 실행한다.
+ */
+
+/* 23일차
+ * return date.toISOString().split("T")[0];     : toISOStiring()은 날짜와 시간을 ISO 8601 형식의 문자열로 변환한다.
+ *                                                  2026-04-04T06:30:20.000Z 처럼 변환된다.
+ *                                                  T는 날짜와 시간을 구분하는 문자다.
+ *                                                split("T")는 T를 기준으로 문자열을 나누어 배열로 반환한다.
+ *                                                여기서 [0]번째 배열을 불러냄으로써 '날짜'를 받을 수 있다.
+ * filter(Boolean)      : 배열에서 거짓 같은 값을 제거하는 용도.
+ *                        filter()는 배열의 각 요소를 검사해서 true면 남기고 false면 제거한다.
+ *                        Boolean(value)는 실행되면 value가 참인지 거짓인지 판단한다.
+ *                          false, 0, "", null, undefined, NaN은 거짓으로 판별된다.
+ *                        filter(Boolean)은 filter(value => Boolean(value))와 같으므로, 따라서 해당 코드는 '잘못 추가된 값, 혹은 빈 값을 제거하는 용도'로 기능한다.
+ *                          "apple", "", "banana"가 들어가 있다면, 해당 함수로 "apple", "banana"만 남길 수 있다.
+ */
+
+/* 25일차
+ * const exception = schedule.exception?.[key];     : ?의 의미는 앞의 값이 null 또는 undefined가 아니면 뒤를 계속 실행하고, 맞다면 undefined를 반환한다.
+ *                                                    따라서 schedule에 exception 객체가 있으면 key에 해당하는 값을 가져오고, exception 객체가 없다면 오류를 내지 말고 undefined를 반환한다.
+ *                                                    지금은 사용하지 않는 방식이나, 차후 사용할 수 있으니 잘 확인할 것.
+ * 
+ * Object.values(CSV).length;       : Object.values()는 객체의 값만 뽑아서 배열로 반환하는 함수.
+ *                                    지금의 CSV에 Object.values(CSV)를 적용하면 [0, 1, 2, 3, 4, ...]를 가져올 수 있다.
+ *                                    반대로 Object.keys(CSV)는 ["ID", "TITLE", "CATEGORY", ...]를 가져올 수 있다.
+ *                                    여기에 length 옵션을 추가하면 CSV 객체 안에 있는 값으 개수(속성 개수)를 구할 수 있다. 
+ */
+
+/* 26일차
+ * function getSchedulesByDate(targetDate, includeDeleted = false)  : includeDeleted = false는 매개변수.
+ *                                                                    함수를 호출할 때 두 번째 인자를 전달받지 않으면 includeDeleted 값을 false로 사용.
+ * 
+ * 27일차: 현재 함수명을 resolveRepeatSchedulesForDate()로 변경.
+ * 28일차: 현재 함수명을 getVisibleSchedulesForDate()로 변경.
+ */
+
+/* 30일차
+ * !!schedule.exceptions[key];      : 값의 존재 여부를 boolean으로 변환하는 표현식.
+ *                                    값이 존재하면 true, 존재하지 않으면(undefined, null 등) false.
+ *                                    해당 날짜에 예외 일정 데이터가 있는지 확인할 때 사용중.
+ */
+
+/* 41일차
+ * selectedCheckbox.checked = selectedScheduleIds.has(schedule.id); : has는 Set이나 Map에 특정 값이 들어있는지 확인하는 메서드.
+ *                                                                    현재 코드로 '현재 일정의 ID가 선택된 일정 ID 목록에 있는가'를 확인한다.
+ */
+
+/* 42일차
+ * category.replaceWith(select);        : DOM에서 현재 요소를 다른 요소로 교체하는 메서드.
+ *                                        category 요소를 제거하고, 그 자리에 select 요소를 넣게 된다.
+ * Object.entries(PRIORITY_OPTIONS).forEach(([value, label]) => {...}       : 객체의 key와 value를 [key, value] 형태의 배열로 만들어주는 함수.
+ *                                                                            PRIORITY_OPTION의 low:"낮음", normal:"보통", high:"높음"을
+ *                                                                              ["low", "낮음"], ["normal", "보통"], ["high", "높음"]으로 변경하는 형식.
+ *                                                                            그리고 forEach([value, label])을 통해서 value = "low"; label = "낮음"; ...으로 변경한다.
+ *                                                                              각 요소가 가지고 있는 배열을 자동으로 분해해서 [value, label]에 넣는 것.
+ */
+
+/* 44일차
+ * editSchedule.reminder == null ? "" : String(editSchedule.reminder);  : 여기서 == null으로 지정하면 null과 undefined를 모두 받을 수 있다.
+ *
+ * const reminderData = timeInput.value === "" ? null : (
+ *                      reminderSelect.value === "" ? null : Number(reminderSelect.value));
+ *                      : 이 식의 설명은 'time 설정이 되어 있지 않으면 알림 설정 값을 없앨 것'.
+ */
