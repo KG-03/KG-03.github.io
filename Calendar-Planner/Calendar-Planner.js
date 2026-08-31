@@ -134,7 +134,7 @@ schedules = schedules.map(schedule => ({
     ...schedule,
     reminder: schedule.reminder ?? "",
     repeat: schedule.repeat ?? "none",
-    repeatEndDate: schedule.repeatEndDate ?? "",
+    repeatEndDate: schedule.repeatEndDate ?? null,
     deleted: schedule.deleted ?? false,
     completedDates: schedule.completedDates ?? [],
     deletedDates: schedule.deletedDates ?? [],
@@ -187,7 +187,7 @@ addBtn.addEventListener("click", () => {
         return;
     }
 
-    if (isEditing) {
+    if(isEditing) {
         updateSchedule();
     } else {
         addSchedule();
@@ -250,7 +250,7 @@ deletedFilter.addEventListener("change", () => {
     renderSchedules();
     updateBulkActionButton();
 
-    if (showDeleted) {
+    if(showDeleted) {
         deleteAllBtn.textContent = "휴지통 비우기";
         deleteDateBtn.style.display = "none";
     }
@@ -353,7 +353,7 @@ bulkAllSelectBtn.addEventListener("click", () => {
 repeatSelect.addEventListener("change", () => {
     if(repeatSelect.value === "none") {
         repeatEndArea.style.display = "none";
-        repeatEndDateInput.value = "";
+        repeatEndDateInput.value = null;
     } else {
         repeatEndArea.style.display = "block";
     }
@@ -501,7 +501,7 @@ function addSchedule() {
         reminder: reminderSelect.value === "" ? null : Number(reminderSelect.value),
 
         repeat: repeatSelect.value,
-        repeatEndDate: repeatEndDateInput.value || "",
+        repeatEndDate: repeatEndDateInput.value || null,
         deleted: false,
 
         completedDates: [],
@@ -543,7 +543,7 @@ function startEdit(schedule, editMode = "all") {
         repeatSelect.style.display = "none";
 
         repeatEndArea.style.display = "none";
-        repeatEndDateInput.value = "";
+        repeatEndDateInput.value = null;
     }
     else {
         titleInput.value = originalSchedule.title;
@@ -558,10 +558,10 @@ function startEdit(schedule, editMode = "all") {
 
         if(originalSchedule.repeat === "none") {
             repeatEndArea.style.display = "none";
-            repeatEndDateInput.value = "";
+            repeatEndDateInput.value = null;
         } else {
             repeatEndArea.style.display = "block";
-            repeatEndDateInput.value = originalSchedule.repeatEndDate || "";
+            repeatEndDateInput.value = originalSchedule.repeatEndDate || null;
         }
 
 
@@ -913,7 +913,7 @@ function createScheduleCard(schedule) {
                 option.value = value;
                 option.textContent = label;
 
-                if (value === schedule.category) option.selected = true;
+                if(value === schedule.category) option.selected = true;
 
                 select.append(option);
             });
@@ -952,7 +952,7 @@ function createScheduleCard(schedule) {
                 option.value = value;
                 option.textContent = label;
 
-                if (value === schedule.priority) option.selected = true;
+                if(value === schedule.priority) option.selected = true;
 
                 select.append(option);
             });
@@ -1059,7 +1059,7 @@ function createScheduleCard(schedule) {
         });
         card.append(editBtn);
 
-        if (schedule.repeat !== "none" &&
+        if(schedule.repeat !== "none" &&
             hasException(schedule, selectedDateData)) {
                 const restoreRepeatBtn = document.createElement("button");
                 restoreRepeatBtn.textContent = "↩ 원래 일정 복원";
@@ -1132,8 +1132,8 @@ function checkboxToggle(schedule, checkbox) {
 }
 
 function isExpiredSchedule(schedule, targetDate) {
-    if (!schedule.time) return false;
-    if (!targetDate) return false;
+    if(!schedule.time) return false;
+    if(!targetDate) return false;
 
     const now = new Date();
 
@@ -1193,7 +1193,7 @@ function renderCalendar() {
             const badgeArea = document.createElement("div");
             badgeArea.classList.add("schedule-badge-area");
 
-                if (completeStats.incomplete > 0) {
+                if(completeStats.incomplete > 0) {
                     const incompleteBadge = document.createElement("span");
                     incompleteBadge.classList.add("schedule-badge", "incomplete-badge");
                     incompleteBadge.textContent = completeStats.incomplete;
@@ -1265,9 +1265,7 @@ function renderSchedules() {
     const visibleSchedules = getVisibleSchedulesForDate(selectedDateData, false);
     renderCompletionRate(visibleSchedules);
 
-    let filteredSchedule = [...schedules];
-
-    filteredSchedule = getVisibleSchedulesForDate(selectedDateData, showDeleted);
+    let filteredSchedule = getVisibleSchedulesForDate(selectedDateData, showDeleted);
     filteredSchedule = filterByCategory(filteredSchedule);
     filteredSchedule = filterByPriority(filteredSchedule);
     filteredSchedule = filterByCompleted(filteredSchedule);
@@ -1281,19 +1279,16 @@ function renderSchedules() {
         currentKeyword === "") {
         scheduleList.textContent = `📅 오늘 날짜에 등록된 일정이 없습니다. 새 일정을 등록해 보세요.`;
         return;
-    } else if (filteredSchedule.length === 0 && currentCategory !== "all") {
+    } else if(filteredSchedule.length === 0 && currentCategory !== "all") {
         scheduleList.textContent = `📅 해당 카테고리에 해당하는 일정이 없습니다.`;
         return;
-    } else if (filteredSchedule.length === 0 && currentPriority !== "all") {
+    } else if(filteredSchedule.length === 0 && currentPriority !== "all") {
         scheduleList.textContent = `📅 해당 우선순위에 해당하는 일정이 없습니다.`;
         return;
-    } else if (filteredSchedule.length === 0 && currentCompleted !== "all") {
+    } else if(filteredSchedule.length === 0 && currentCompleted !== "all") {
         scheduleList.textContent = `📅 해당 완료 상황에 해당하는 일정이 없습니다.`;
         return;
-    } else if (filteredSchedule.length === 0 && currentCompleted !== "all") {
-        scheduleList.textContent = `📅 해당 완료 상황에 해당하는 일정이 없습니다.`;
-        return;
-    } else if (filteredSchedule.length === 0 &&  currentKeyword !== "") {
+    } else if(filteredSchedule.length === 0 &&  currentKeyword !== "") {
         scheduleList.textContent = `📅 해당 키워드에 해당하는 일정이 없습니다.`;
         return;
     }
@@ -1312,8 +1307,8 @@ function renderTodaysDate() {
     today.innerHTML = `Today: ${year}년 ${month}월 ${day}일`;
 }
 
-function renderStatistics(schedules) {
-    const stats = getStatistics(schedules);
+function renderStatistics(scheduleList) {
+    const stats = getStatistics(scheduleList);
 
     statsList.innerHTML = "";
     statsList.classList.add("statistics-area");
@@ -1337,7 +1332,7 @@ function renderStatisticsSection(title, count) {
 }
 
 function selectCalendarCell(year, month, date, cell = null) {
-    if (currentCell) {
+    if(currentCell) {
         currentCell.classList.remove("click-cell");
     }
 
@@ -1373,7 +1368,7 @@ function showTooltip(dateCell, year, month, date) {
 
     calendarTooltip.innerHTML = "";
 
-    const title = document.createElement("storng");
+    const title = document.createElement("strong");
     title.textContent = `${month + 1}월 ${date}일`;
     calendarTooltip.append(title);
 
@@ -1417,7 +1412,7 @@ function renderCompletionRate(schedule) {
     
     const total = schedule.length;
 
-    if (total === 0) {
+    if(total === 0) {
         completionRateText.textContent = "0%";
         completionProgress.style.width = "0%";
         return;
@@ -1461,7 +1456,7 @@ function resetScheduleForm() {
     reminderArea.style.display = "none";
     
     repeatSelect.value = "none";
-    repeatEndDateInput.value = "";
+    repeatEndDateInput.value = null;
     repeatEndArea.style.display = "none";
     
     addBtn.textContent = "✓ 추가";
@@ -1541,8 +1536,6 @@ function isRepeatSchedule(schedule, targetDate) {
         default:
             return false;
     }
-
-    return false;
 }
 
 function filterByCategory(filteredSchedule) {
@@ -1563,7 +1556,7 @@ function filterByPriority(filteredSchedule) {
 function filterByCompleted(filteredSchedule) {
     if(currentCompleted === "completed") {
         filteredSchedule = filteredSchedule.filter(schedule => isCompleted(schedule, selectedDateData));
-    } else if (currentCompleted === "uncompleted") {
+    } else if(currentCompleted === "uncompleted") {
         filteredSchedule = filteredSchedule.filter(schedule => !isCompleted(schedule, selectedDateData));
     }
 
@@ -1596,14 +1589,14 @@ function sortSchedules(filteredSchedule) {
                 if(!a.time) return 1;
                 if(!b.time) return -1;
 
-                return a.time.localeCompare(b.time);
+                return b.time.localeCompare(a.time);
 
             case "time-asc":
                 if(!a.time && !b.time) return 0;
                 if(!a.time) return 1;
                 if(!b.time) return -1;
 
-                return b.time.localeCompare(a.time);
+                return a.time.localeCompare(b.time);
 
             case "latest":
                 return b.createdAt - a.createdAt;
@@ -1661,7 +1654,7 @@ function exportCSV() {
             escapeCSV(schedule.time),
             escapeCSV(schedule.reminder ?? ""),
             escapeCSV(schedule.repeat),
-            escapeCSV(schedule.repeatEndDate ?? ""),
+            escapeCSV(schedule.repeatEndDate ?? null),
             escapeCSV(schedule.deleted),
             escapeCSV(schedule.completedDates.join("|")),
             escapeCSV(schedule.deletedDates.join("|")),
@@ -1702,7 +1695,7 @@ function importCSV(event) {
         const lines = csv.split(/\r?\n/);
         lines.shift();
         
-        if (!validateCSV(lines)) {
+        if(!validateCSV(lines)) {
             return;
         }
 
@@ -1723,7 +1716,7 @@ function importCSV(event) {
                 time: unescapeCSV(values[CSV.TIME]) === "0" ? null : unescapeCSV(values[CSV.TIME]),
                 reminder: values[CSV.REMINDER] === "" ? null : Number(unescapeCSV(values[CSV.REMINDER])),
                 repeat: unescapeCSV(values[CSV.REPEAT]),
-                repeatEndDate: unescapeCSV(values[CSV.REPEAT_END_DATE]) || "",
+                repeatEndDate: unescapeCSV(values[CSV.REPEAT_END_DATE]) || null,
                 deleted: unescapeCSV(values[CSV.DELETED]).toLowerCase() === "true",
                 completedDates: unescapeCSV(values[CSV.COMPLETED_DATES]).split("|").filter(Boolean),
                 deletedDates: unescapeCSV(values[CSV.DELETED_DATES]).split("|").filter(Boolean),
@@ -1751,8 +1744,8 @@ function parseCSVLine(line) {
     for (let i = 0; i < line.length; i++) {
         const ch = line[i];
 
-        if (ch === '"') {
-            if (inQuotes && line[i + 1] === '"') {
+        if(ch === '"') {
+            if(inQuotes && line[i + 1] === '"') {
                 current += '"';
                 i++;
             } else {
@@ -1762,7 +1755,7 @@ function parseCSVLine(line) {
             continue;
         }
 
-        if (ch === "," && !inQuotes) {
+        if(ch === "," && !inQuotes) {
             values.push(current);
             current = "";
             continue;
@@ -1786,7 +1779,7 @@ function escapeCSV(value) {
 function unescapeCSV(value) {
     value = value.trim();
 
-    if (value.startsWith('"') && value.endsWith('"')) {
+    if(value.startsWith('"') && value.endsWith('"')) {
         value = value.slice(1, -1);
     }
 
@@ -1797,11 +1790,11 @@ function unescapeCSV(value) {
 
 function validateCSV(lines) {
     for (const line of lines) {
-        if (!line.trim()) continue;
+        if(!line.trim()) continue;
 
         const values = parseCSVLine(line);
 
-        if (values.length !== Object.values(CSV).length) {
+        if(values.length !== Object.values(CSV).length) {
             console.log(values);
             console.log(values.length);
 
@@ -1809,37 +1802,37 @@ function validateCSV(lines) {
             return false;
         }
 
-        if (values.length !== CSV_LENGTH) {
+        if(values.length !== CSV_LENGTH) {
             alert("CSV 형식이 올바르지 않습니다.");
             return false;
         }
 
-        if (!values[CSV.ID].trim()) {
+        if(!values[CSV.ID].trim()) {
             alert("ID가 비어 있습니다.");
             return false;
         }
 
-        if (isNaN(Number(values[CSV.ID]))) {
+        if(isNaN(Number(values[CSV.ID]))) {
             alert("ID 형식이 잘못되었습니다.");
             return false;
         }
 
-        if (!values[CSV.TITLE].trim()) {
+        if(!values[CSV.TITLE].trim()) {
             alert("제목이 비어 있습니다.");
             return false;
         }
 
-        if (!(unescapeCSV(values[CSV.CATEGORY]) in CATEGORY_OPTIONS)) {
+        if(!(unescapeCSV(values[CSV.CATEGORY]) in CATEGORY_OPTIONS)) {
             alert("카테고리 값이 올바르지 않습니다.");
             return false;
         }
 
-        if (!(unescapeCSV(values[CSV.PRIORITY]) in PRIORITY_OPTIONS)) {
+        if(!(unescapeCSV(values[CSV.PRIORITY]) in PRIORITY_OPTIONS)) {
             alert("우선순위 값이 올바르지 않습니다.");
             return false;
         }
 
-        if (isNaN(Number(values[CSV.DATE]))) {
+        if(isNaN(Number(values[CSV.DATE]))) {
             alert("날짜 형식이 올바르지 않습니다.");
             return false;
         }
@@ -1863,12 +1856,12 @@ function validateCSV(lines) {
             return false;
         }
 
-        if (isNaN(Number(values[CSV.CREATED_AT]))) {
+        if(isNaN(Number(values[CSV.CREATED_AT]))) {
             alert("createdAt 값이 올바르지 않습니다.");
             return false;
         }
 
-        if (isNaN(Number(values[CSV.UPDATED_AT]))) {
+        if(isNaN(Number(values[CSV.UPDATED_AT]))) {
             alert("updatedAt 값이 올바르지 않습니다.");
             return false;
         }
@@ -1906,9 +1899,9 @@ function hasException(schedule, targetDate) {
     return !!schedule.exceptions[key];
 }
 
-function getStatistics(schedules) {
+function getStatistics(scheduleList) {
     const stats = {
-        total: schedules.length,
+        total: scheduleList.length,
         complete: 0,
         incomplete: 0,
         category: {
@@ -1920,7 +1913,7 @@ function getStatistics(schedules) {
         }
     };
 
-    schedules.forEach(schedule => {
+    scheduleList.forEach(schedule => {
         if(isCompleted(schedule, selectedDateData)) {
             stats.complete++;
         } else {
@@ -1995,7 +1988,7 @@ function changeScheduleField(schedule, field, value) {
                     "2. 반복 일정 전체 변경\n" +
                     "그 외: 취소");
     
-    if (answer === "1") {
+    if(answer === "1") {
         const original = schedule.originalSchedule || schedule;
         const key = getDateKey(selectedDateData);
 
@@ -2229,7 +2222,7 @@ setInterval(checkScheduleNotifications, 10000);
  * .replace(/\\n/g, "\n");      : 문자 두 개 \와 n을 실제 줄바꿈 문자로 바꾼다는 의미. \\n와 \n은 다르기 때문.
  *                                \n은 줄바꿈이 이루어지지만, \\n은 줄바꿈이 이루어지지 않는다.
  * 
- * if (value.startsWith('"') && value.endsWith('"')) {
+ * if(value.startsWith('"') && value.endsWith('"')) {
  *      value = value.slice(1, -1);
  *  }
  *      : startsWith()  : 문자열이 특정 문자열로 시작하는지 확인.
