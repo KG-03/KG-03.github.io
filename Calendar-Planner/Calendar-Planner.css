@@ -2,7 +2,8 @@ body {
     margin: 0;
     padding: 20px;
 
-    transition: 0.3s;
+    transition: background-color 0.3s,
+                color 0.3s;
 }
 
 header {
@@ -34,6 +35,10 @@ header {
     border-radius: 10px;
 }
 
+#todayBtn {
+    margin-bottom: 5px;
+}
+
 .calendar-header {
     display: flex;
     justify-content: space-between;
@@ -63,12 +68,12 @@ header {
     border-radius: 6px;
 }
 
-.calendar-grid div:hover {
+.calendar-grid > div:hover {
     background: #f3f2d9;
     cursor: pointer;
 }
 
-.week-row div {
+.week-row > div {
     font-weight: bold;
     background: #f5f5f5;
 }
@@ -163,8 +168,8 @@ header {
 /*===== reminder =====*/
 .reminder-area {
     display: none;
+    align-items: center;
     
-    gap: 10px;
     margin-bottom: 10px;
     margin-left: 50px;
 }
@@ -172,8 +177,8 @@ header {
 /*===== repeat =====*/
 .repeat-end-area {
     display: none;
+    align-items: center;
 
-    gap: 10px;
     margin-bottom: 10px;
     margin-left: 50px;
 }
@@ -432,3 +437,17 @@ body.dark-theme .helper-tooltip {
     border: 1px solid #222222;
     border-radius: 8px;    
 }
+
+/* 2일차
+ * 격자무늬 만들기
+ * display: grid;           : 이 요소를 Grid 컨테이너로 만든다.
+ * grid-template-columns;   : 열의 개수를 정한다.
+ *                            repeat()  : 같은 설정을 여러 번 반복해서 작성하는 함수. (횟수, 반복할 것)
+ *                                        (7, 1fr)이라면 1fr을 7번 반복한다는 의미다.
+ *                            1fr       : fraction(비율)을 의미하는 Grid 전용 단위.
+ */
+
+/* 49일차
+ * .calendar-grid > div     : calendar-grid의 바로 아래에 있는 div만 해당 css를 적용하라는 의미.
+ *
+ */
